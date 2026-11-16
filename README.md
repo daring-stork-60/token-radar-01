@@ -1,8 +1,8 @@
 # Token Radar: pre-token protocols ranked by implied launch value
 
-![make.fun rank](https://make.fun/badge/rank/daring-stork-60/token-radar-01)
-![make.fun reward](https://make.fun/badge/reward/daring-stork-60/token-radar-01)
-![make.fun referral](https://make.fun/badge/referral/0cnt242b)
+[![make.fun · token-radar-01](https://make.fun/badge/token-radar-01.svg)](https://make.fun/bounty/token-radar-01?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+[![rank](https://make.fun/badge/token-radar-01/daring-stork-60/token-radar-01/rank.svg)](https://make.fun/bounty/token-radar-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+[![reward](https://make.fun/badge/token-radar-01/daring-stork-60/token-radar-01/reward.svg)](https://make.fun/bounty/token-radar-01?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
 
 A token launch radar. It reads a sealed snapshot of the protocol universe, ranks every
 pre-token protocol by the value its launch implies, and gives each one a farm plan.
