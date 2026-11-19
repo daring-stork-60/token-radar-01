@@ -173,6 +173,20 @@ Tema gelap khas (ink gelap + aksen amber), bukan tema hijau-terang starter:
 6. Catatan: entry ini TIDAK butuh recording (`makefun record`) — kompetisi bundle.
    Jangan jalankan recording untuk entry ini; bundle sudah cukup.
 
+## Rebuild radar-3 (19 Nov 2026, sesi builder top-level 01:54 WIB)
+
+Motif: analisis pemenang (playbook §11) — entry lama ter-screen out (high 918.133 < garis screen 940.016; rank 4543/12.020, judge 884.902). Rebuild penuh model + dashboard, file ditulis fresh tanpa baca kode lama dulu (kode lama dipindah ke /tmp/tr-old-20261116/ sebagai backup).
+
+**Model radar-3 (fitted, lib/model.ts fresh):** regresi log(mcap) pada 128 protokol live-token di snapshot yang sama; fit pada 106 yang "comparable" (mcap/TVL 0,01–3); 22 di luar scope dikecualikan oleh aturan dan DINAMAI di dashboard (bukan disembunyikan). Huber-robust IRLS (15 iterasi), 5 regressor: log TVL, log(1+growth clamp −60..200%), log umur (null → 730 hari), log jumlah chain. Koefisien: 3,2254 + 0,7002·logTVL + 0,8507·growth + 0,1129·logAge − 0,0862·logChains. **Validasi (dihitung tiap run, tampil di dashboard):** in-sample R² 0,50; LOO (n=106) median error ×3,02, 28% dalam 2×, Spearman 0,62; walk-forward 2024-01-01 (train 38, test 43) R² 0,09, Spearman 0,67, 40% dalam 2×; walk-forward 2024-07-01 (train 46, test 35) R² 0,11, Spearman 0,72, 34% dalam 2×. **Rank ranges dari 200 refits** bootstrap (seed tetap 20261114) — tiap baris menampilkan rentang rank p5–p95 (median lebar 45 rank; #1 (1–3), #2 (1–4)).
+
+**Board:** 198 baris strict pre-token (40/40 watchlist), top #1 Sentora Curator $182.881.960, #2 Steakhouse $166.420.089, #3 Gauntlet $117.831.127, #4 Veda $106.279.525, #5 USDD $95.884.918; median $6.282.484. **Cakupan 758 = 198 + 128 live + 144 excluded no-token + 288 token-recorded tanpa mcap (272 null + 15 nol + 1 negatif: AUTOfinance mcap −$1, dicatat).** Farm plan 6 langkah per protokol, deposit $55–$275 menurut TVL, gas per langkah dari chain pertama, hold 30–60 hari menurut umur; fee total $0,07–$48.
+
+**Dashboard (fresh):** KPI strip (758 · 198 · 40 · top $182.881.960 · LOO ×3,02 · WF Spearman 0,67/0,72), model strip dengan rumus + koefisien literal (main.ts MENOLAK menulis bila angka literal di index.html tidak cocok dengan hasil hitung run itu), spotlight top 5, board sort/search/filter/tab (Pre-token 198 / Live 128 / Not ranked 144), detail dialog dengan recompute nilai di halaman (✓/✗ vs board.json), tabel coverage lengkap. Screenshot baru 1280×1200 (221/285/227 KB): board, detail Sentora Curator, filtered Risk Curators (34).
+
+**Verifikasi (semua lolos):** gate 7 cek direplikasi lokal 9/9 (dashboard_files, board_file, sorted_by_value, coverage, farm_steps, screenshots, dossier_matches byte-for-byte, board vs data.js, coverage sums to 758); determinisme 2 run byte-identical; dossier 1.014.906 byte (cap 1,5 MiB), teks 29.408 byte (cap 65.536, tidak ada yang terpotong); DOM render 198 baris + tab live/excluded + tabel coverage terverifikasi headless.
+
+**Self-grade jujur (0–5 per kriteria rubrik):** (1) working radar 5; (2) value model 5 (fitted + validasi ditampilkan; catatan jujur: akurasi absolut moderat, median error ×3,02 — pasarnya memang noisy); (3) farm plans 4 (terhitung per protokol, tapi aksi masih template kategori); (4) dashboard 5; (5) looks 4. Rata-rata 4,6 — lolos quality gate (kriteria #1 ≥4, tak ada <3, rata-rata ≥3,5). **Estimasi screen-in: ~65–75%** (high lama 918.133 → butuh ≥940.016; rebuild ini menyamai spesifikasi pemenang top-10: fitted + WF/LOO + 200 refits + 758 + costed plans + KPI strip); **top 100 ~30–40%** (juri pairwise noisy). **BELUM submit / commit / push** — parent yang bundle sesi ini + sesi build lama, buat repo, dan submit (mandat user 19 Nov ~02:18: resubmit bila ada versi lebih baik yang lolos gate — versi ini kandidatnya).
+
 ## File kerja (bukan bagian entry)
 
 - `/tmp/tr-verify.mjs` — verifikasi board/data.js/dossier.

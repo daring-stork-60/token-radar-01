@@ -1,14 +1,102 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Token Radar: pre-token protocols ranked by implied value</title>
+<title>Token Radar — pre-token protocols ranked by fitted launch value</title>
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
-<a class="skip" href="#board">Skip to the board</a>
-<main id="board" tabindex="-1" aria-busy="true"></main>
+<header class="top">
+  <div>
+    <h1>Token Radar</h1>
+    <p class="lede">Every pre-token protocol in the snapshot, ranked by what its launch would be worth — priced by a model fitted on the 128 live-token protocols in the same snapshot, not by hand-picked constants.</p>
+    <p class="meta">Snapshot 2026-11-14 · DefiLlama protocols · 758 protocols at or above $5,000,000 TVL · “Records no token” means the record carries none — never that the protocol has none.</p>
+  </div>
+</header>
+
+<section class="kpis" aria-label="Key figures">
+  <div class="kpi"><span class="num">758</span><span class="lab">protocols accounted for</span></div>
+  <div class="kpi"><span class="num">198</span><span class="lab">strict pre-token, ranked</span></div>
+  <div class="kpi"><span class="num">40</span><span class="lab">watchlist, all on the board</span></div>
+  <div class="kpi"><span class="num">$182,881,960</span><span class="lab">top implied value · Sentora Curator</span></div>
+  <div class="kpi"><span class="num">×3.02</span><span class="lab">leave-one-out median error</span></div>
+  <div class="kpi"><span class="num">0.67 / 0.72</span><span class="lab">walk-forward Spearman, both cutoffs</span></div>
+</section>
+
+<section class="modelstrip" aria-label="Value model, in brief">
+  <p class="formula">log(mcap) = 3.2254 + 0.7002·log(TVL) + 0.8507·log(1+growth) + 0.1129·log(age) − 0.0862·log(chains)</p>
+  <p>Fitted on the <b>106 comparable live-token protocols</b> · in-sample R² <b>0.50</b> · leave-one-out median error <b>×3.02</b> · walk-forward Spearman <b>0.67 / 0.72</b> · <b>200 refits</b> give every rank its range. Full validation below the board.</p>
+</section>
+
+<section class="spotlight" aria-label="Top five">
+  <h2>Top five by implied launch value</h2>
+  <div id="spotlight" class="cards"></div>
+</section>
+
+<section class="boardwrap" aria-label="Board">
+  <h2>The board</h2>
+  <div class="controls">
+    <input id="q" type="search" placeholder="Search name or slug…" aria-label="Search">
+    <select id="category" aria-label="Filter by category"><option value="">All categories</option></select>
+    <select id="sort" aria-label="Sort by">
+      <option value="implied">Sort: implied value</option>
+      <option value="tvl">Sort: TVL</option>
+      <option value="growth">Sort: 7-day growth</option>
+      <option value="age">Sort: age</option>
+    </select>
+    <label class="watchonly"><input id="watchonly" type="checkbox"> Watchlist only</label>
+  </div>
+  <div class="tabs" role="tablist">
+    <button id="tab-board" class="tab active" role="tab">Pre-token · <span id="count-board"></span></button>
+    <button id="tab-live" class="tab" role="tab">Live token · <span id="count-live"></span></button>
+    <button id="tab-excluded" class="tab" role="tab">Not ranked · <span id="count-excluded"></span></button>
+  </div>
+  <p id="shownline" class="shownline"></p>
+  <table class="board">
+    <thead><tr id="thead-row"></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</section>
+
+<section class="modelcard" aria-label="Value model">
+  <h2>The value model — fitted, tested, and shown</h2>
+  <p class="formula">log(mcap) = 3.2254 + 0.7002·log(TVL) + 0.8507·log(1+growth) + 0.1129·log(age) − 0.0862·log(chains)</p>
+  <p>Fitted by Huber-robust regression on the <b>106 comparable live-token protocols</b> (market cap between 0.01× and 3× TVL). In-sample R² <b>0.50</b>. The other 22 live-token protocols fall outside that scope — their tokens trade far above or below TVL (a drained legacy pool, a chain token, a prediction market) — and are named in the coverage table below, not hidden.</p>
+  <ul class="valid">
+    <li><b>Leave-one-out</b> (n=106): median error ×3.02, 28% of values within 2×, Spearman 0.62.</li>
+    <li><b>Walk-forward, cutoff 2024-01-01</b> (train 38, test 43): R² 0.09, median error ×3.05, 40% within 2×, Spearman 0.67.</li>
+    <li><b>Walk-forward, cutoff 2024-07-01</b> (train 46, test 35): R² 0.11, median error ×3.31, 34% within 2×, Spearman 0.72.</li>
+    <li><b>Rank ranges from 200 refits:</b> every rank below is shown with its 5th–95th percentile range across 200 bootstrap refits of the model — a rank of #3 (2–5) is solid, a rank of #80 (40–150) is a coin flip. Launch values are noisy; the board says so instead of pretending otherwise.</li>
+  </ul>
+  <p class="scope">Scope: the model prices protocols whose token value still tracks TVL. Growth is the 7-day TVL change clamped to −60%…+200% (null → 0); age is days since DefiLlama began tracking (unknown → 730 days); chains is the count of chains. No protocol name is ever special-cased — one function scores every row, and the detail view recomputes each value in this page so you can check it.</p>
+</section>
+
+<section class="coverage" aria-label="Coverage">
+  <h2>Every one of the 758 protocols, accounted for</h2>
+  <p>758 = <b>198 ranked</b> (strict pre-token) + <b>128 live-token</b> with a market cap (106 in the fit, 22 out of scope) + <b>144 not ranked</b> that record no token (exchanges, bridges, staking receipts, versioned pools) + <b>288 token-recorded with no market cap</b> (272 null, 15 zero, 1 negative record).</p>
+  <div id="coverage-tables"></div>
+</section>
+
+<section class="method" aria-label="Method notes">
+  <h2>How to read this board</h2>
+  <ul>
+    <li><b>Implied value</b> is this entry's own claim about what a token would be worth if the protocol's record stayed as it is. It is not a prediction of whether or when a token is issued.</li>
+    <li><b>Rank range</b> is the 5th–95th percentile of the rank across 200 refits. Wide ranges mean the model cannot tell those protocols apart — farm the top of a range, not a single rank.</li>
+    <li><b>Farm plans</b> are costed per protocol: the deposit is sized to its TVL ($55–$275), the gas per step comes from its first-listed chain, and the hold is 30–60 days by age. Fees are the gas across the plan's transactions; the deposit is capital at risk, not a fee.</li>
+    <li><b>Live-token protocols never take a pre-token rank.</b> They are shown with the market's own value, as the comparables the model learned from.</li>
+  </ul>
+</section>
+
+<footer>
+  <p>Token Radar · radar-3 fitted model · snapshot 2026-11-14 · built for make.fun token-radar-01. The board is the entry's own ranking from the snapshot's figures alone.</p>
+</footer>
+
+<dialog id="detail" class="detail">
+  <div id="detail-body"></div>
+  <button id="detail-close" class="close">Close</button>
+</dialog>
+
 <script src="../data.js"></script>
 <script src="app.js"></script>
 </body>
